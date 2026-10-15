@@ -1,8 +1,8 @@
 # Flip 7 · Contador de puntajes
 
-Contador de puntajes para el juego de cartas Flip 7, pensado para usar en el celular durante la partida.
+Contador de puntajes para el juego de cartas Flip 7, pensado para usar en el celular durante la partida. Se puede instalar como app (PWA) y funciona sin conexión.
 
-Es una sola página (`index.html`) con CSS y JS inline, sin librerías ni build. Basta con abrirla en el navegador o servirla con GitHub Pages.
+La app es una sola página (`index.html`) con CSS y JS inline, sin librerías ni build. Junto a ella están el manifest, el service worker y los íconos.
 
 ## Reglas que aplica
 
@@ -13,16 +13,35 @@ Es una sola página (`index.html`) con CSS y JS inline, sin librerías ni build.
 
 ## Cómo se usa
 
-1. **Vista inicial:** se eligen los jugadores (con sugerencias de quienes jugaron antes) y se ve el historial de ganadores. Desde ahí también se pueden registrar victorias de partidas anteriores que no se anotaron en el teléfono.
-2. **Juego:** una tarjeta por jugador con puntos de la ronda, Flip 7 y Bust. Al cerrar la ronda se reordena por puntaje.
-3. **Configuración (rueda):** editar jugadores a mitad de juego, cambiar la meta, tema claro u oscuro, descartar el juego, borrar el historial o borrar todos los datos.
+1. **Vista inicial:** se eligen los jugadores (con sugerencias de quienes jugaron antes) y se ve el historial de ganadores. Desde ahí se pueden registrar partidas anteriores, compartir el historial e importarlo.
+2. **Juego:** una tarjeta por jugador con puntos de la ronda, Flip 7 y Bust (cada uno con su efecto). "Borrar datos de esta ronda" limpia lo ingresado en la ronda en curso. Al cerrar la ronda se reordena por puntaje.
+3. **Configuración (rueda):** editar jugadores a mitad de juego, compartir e importar ganadores, cambiar la meta, tema claro u oscuro, instalar la app y borrar datos.
 
-## Datos
+## Pasar el historial entre teléfonos
 
-Todo se guarda en `localStorage` del teléfono (clave `flip7-contador-v2`); no hay cuentas ni servidor. El historial parte con una victoria de Simon, Mati y Joseto (constante `PRELOADED_WINNERS`). Si había un juego en curso de la versión anterior, se retoma al abrir.
+No hay cuentas ni servidor: cada teléfono guarda sus datos en `localStorage` (clave `flip7-contador-v2`). Para sincronizar, en un teléfono se toca **Compartir** y se envía el mensaje; en el otro se toca **Importar**, se pega y se elige **Agregar a mi historial** o **Reemplazar mi historial**. La importación también suma los jugadores a la lista de "Jugaron antes".
 
-El botón "Compartir" de la vista inicial genera un resumen de ganadores para pegar en el grupo.
+El formato es texto simple, así que también se puede escribir a mano:
 
-## Publicar con GitHub Pages
+```
+Juego 1: Simon
+Juego 4 · 15-10-2026: Exe 205, Wato 150, Ware 90
+Jugadores: Wato, Ware, Exe
+```
 
-Settings → Pages → Deploy from a branch → `main` / `(root)`.
+O directamente un ganador por línea.
+
+## Instalar como app
+
+Se publica con GitHub Pages (Settings → Pages → Deploy from a branch → `main` / `(root)`). Luego:
+
+- **iPhone:** abrir en Safari → Compartir → Agregar a inicio.
+- **Android:** Chrome ofrece instalarla, o desde la rueda de configuración → "Instalar en este teléfono".
+
+En iPhone la app instalada guarda sus datos aparte de Safari. Para llevar el historial, usa Compartir e Importar.
+
+## Archivos
+
+- `index.html`: la app completa.
+- `manifest.webmanifest`, `sw.js`: configuración de la PWA y caché sin conexión. Al publicar cambios, conviene subir la versión de `CACHE` en `sw.js`.
+- `icons/`: logo en SVG y PNG (192, 512, maskable y apple-touch-icon).

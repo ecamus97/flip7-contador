@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#8fdcd6" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0d2c30" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Flip 7">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjExMiIgZmlsbD0iIzhmZGNkNiIvPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDI1NiAyNTYpIHNjYWxlKDEuMCkgdHJhbnNsYXRlKC0yNTYgLTI1NikiPgogIDxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0yNiA2KSByb3RhdGUoLTIwIDI1NiAyNzApIj48cmVjdCB4PSIxNTAiIHk9IjExMiIgd2lkdGg9IjIxMiIgaGVpZ2h0PSIyOTIiIHJ4PSIyOCIgZmlsbD0iI2Q2MjgyOCIgc3Ryb2tlPSIjMTYyNTJjIiBzdHJva2Utd2lkdGg9IjE0Ii8+PC9nPgogIDxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDI2IDYpIHJvdGF0ZSgxNyAyNTYgMjcwKSI+PHJlY3QgeD0iMTUwIiB5PSIxMTIiIHdpZHRoPSIyMTIiIGhlaWdodD0iMjkyIiByeD0iMjgiIGZpbGw9IiNmZmQyM2YiIHN0cm9rZT0iIzE2MjUyYyIgc3Ryb2tlLXdpZHRoPSIxNCIvPjwvZz4KICA8ZyB0cmFuc2Zvcm09InJvdGF0ZSgtMyAyNTYgMjYwKSI+CiAgICA8cmVjdCB4PSIxNDYiIHk9IjEwMiIgd2lkdGg9IjIyMCIgaGVpZ2h0PSIzMDAiIHJ4PSIzMCIgZmlsbD0iI2ZmZmRmNCIgc3Ryb2tlPSIjMTYyNTJjIiBzdHJva2Utd2lkdGg9IjE0Ii8+CiAgICA8cGF0aCBkPSJNMTk2IDE2MCBIMzE4IFYxOTggTDI2MiAzNTAgSDIxNCBMMjY4IDIwMCBIMTk2IFoiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDExIDExKSIgZmlsbD0iI2Q2MjgyOCIgc3Ryb2tlPSIjZDYyODI4IiBzdHJva2Utd2lkdGg9IjEyIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CiAgICA8cGF0aCBkPSJNMTk2IDE2MCBIMzE4IFYxOTggTDI2MiAzNTAgSDIxNCBMMjY4IDIwMCBIMTk2IFoiIGZpbGw9IiNmZmQyM2YiIHN0cm9rZT0iIzE2MjUyYyIgc3Ryb2tlLXdpZHRoPSIxMiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDwvZz48L2c+PC9zdmc+">
 <title>Flip 7 · Contador de puntajes</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -80,7 +85,7 @@ button:disabled{cursor:not-allowed}
 :focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:10px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
-.app{max-width:560px;margin:0 auto;padding:14px 16px 128px}
+.app{max-width:560px;margin:0 auto;padding:14px 16px 128px;overflow-x:hidden;overflow-x:clip}
 
 /* Encabezado */
 .top{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px;padding:6px 2px 16px}
@@ -145,6 +150,7 @@ button:disabled{cursor:not-allowed}
 /* Tarjetas */
 .cards{display:flex;flex-direction:column;gap:14px}
 .card{
+  position:relative;
   background:var(--surface);
   border:3px solid var(--line);border-radius:20px;
   padding:12px 14px;
@@ -324,6 +330,63 @@ td.nd{color:var(--muted)}
 
 .foot{margin:14px 0 0;text-align:center;font-size:.8rem;color:var(--muted)}
 
+/* Compartir e importar */
+.share-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0 0}
+.importbox{min-height:130px;resize:vertical;font-weight:500;font-size:16px;line-height:1.4;padding:10px 12px;font-family:var(--font-body)}
+.import-actions{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.paste-row{display:flex;justify-content:flex-end;margin-top:8px}
+.preview{margin:10px 0 0;font-size:.88rem;font-weight:500}
+
+/* Efectos de Flip 7 y Bust */
+.fx-layer{position:absolute;inset:0;pointer-events:none;z-index:3}
+.fx-bit{
+  position:absolute;left:var(--x);top:var(--y);width:9px;height:14px;border-radius:2px;
+  background:var(--c);border:1.5px solid var(--logo-line);
+  animation:fx-burst .85s cubic-bezier(.15,.7,.3,1) var(--d,0ms) both;
+}
+@keyframes fx-burst{
+  0%{transform:translate(-50%,-50%) rotate(0) scale(.5);opacity:1}
+  100%{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) rotate(var(--r)) scale(1);opacity:0}
+}
+.fx-pop{
+  position:absolute;left:50%;top:40%;white-space:nowrap;
+  font-family:var(--font-display);font-size:2.5rem;line-height:1;
+  color:var(--yellow);-webkit-text-stroke:2.5px var(--logo-line);paint-order:stroke fill;
+  text-shadow:3px 3px 0 var(--red);
+  animation:fx-pop .95s ease-out both;
+}
+.fx-pop.bust{
+  color:#fff;-webkit-text-stroke:0;text-shadow:none;
+  background:var(--red);border:3px solid var(--logo-line);border-radius:12px;padding:4px 16px;font-size:2rem;
+  animation:fx-stamp .95s ease-out both;
+}
+@keyframes fx-pop{
+  0%{transform:translate(-50%,-50%) scale(.3) rotate(-8deg);opacity:0}
+  25%{transform:translate(-50%,-50%) scale(1.15) rotate(-4deg);opacity:1}
+  70%{transform:translate(-50%,-60%) scale(1) rotate(-4deg);opacity:1}
+  100%{transform:translate(-50%,-80%) scale(1) rotate(-4deg);opacity:0}
+}
+@keyframes fx-stamp{
+  0%{transform:translate(-50%,-50%) scale(2.4) rotate(-16deg);opacity:0}
+  18%{transform:translate(-50%,-50%) scale(1) rotate(-10deg);opacity:1}
+  75%{transform:translate(-50%,-50%) scale(1) rotate(-10deg);opacity:1}
+  100%{transform:translate(-50%,-50%) scale(.95) rotate(-10deg);opacity:0}
+}
+.card.fx-shake{animation:fx-shake .45s ease-in-out}
+@keyframes fx-shake{
+  0%,100%{transform:translateX(0)}
+  15%{transform:translateX(-8px) rotate(-1deg)}
+  30%{transform:translateX(7px) rotate(1deg)}
+  45%{transform:translateX(-5px)}
+  60%{transform:translateX(4px)}
+  80%{transform:translateX(-2px)}
+}
+.card.fx-glow{animation:fx-glow .8s ease-out}
+@keyframes fx-glow{
+  0%{outline:0 solid rgba(255,210,63,.95);outline-offset:0}
+  100%{outline:16px solid rgba(255,210,63,0);outline-offset:4px}
+}
+
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{transition:none!important;animation:none!important}
 }
@@ -351,11 +414,12 @@ td.nd{color:var(--muted)}
     </section>
 
     <section class="box" aria-labelledby="winTitle">
-      <div class="box-head">
-        <h2 id="winTitle">Ganadores</h2>
-        <button type="button" class="ibtn" id="shareWins">Compartir</button>
-      </div>
+      <h2 id="winTitle">Ganadores</h2>
       <div id="setupHistory"></div>
+      <div class="share-row">
+        <button type="button" class="btn" id="shareWins">Compartir</button>
+        <button type="button" class="btn" id="openImport">Importar</button>
+      </div>
       <div class="past">
         <label class="entry-label" for="pastWinner">Registrar una partida anterior</label>
         <div class="addrow">
@@ -379,17 +443,17 @@ td.nd{color:var(--muted)}
     <section id="cards" class="cards" aria-label="Puntajes por jugador"></section>
 
     <div class="actions">
-      <button type="button" id="undo" class="btn">Deshacer última ronda</button>
+      <button type="button" id="clearRound" class="btn">Borrar datos de esta ronda</button>
     </div>
-
-    <details id="histDetails" class="panel">
-      <summary>Historial de juegos</summary>
-      <div class="panel-body" id="gameHistory"></div>
-    </details>
 
     <details id="roundsDetails" class="panel">
       <summary>Rondas del juego actual</summary>
       <div class="panel-body" id="rounds"></div>
+    </details>
+
+    <details id="histDetails" class="panel">
+      <summary>Historial de juegos</summary>
+      <div class="panel-body" id="gameHistory"></div>
     </details>
     <p class="foot">Enter en el teclado pasa al siguiente jugador</p>
   </div>
@@ -422,6 +486,25 @@ td.nd{color:var(--muted)}
       <input class="pname target" id="targetIn" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="3" autocomplete="off" enterkeyhint="done">
       <p class="perr" id="targetErr" role="alert" hidden></p>
       <p class="pnote">Entre 50 y 999 puntos. Las reglas oficiales usan 200.</p>
+    </section>
+    <section class="sset" id="importSec">
+      <h3>Compartir e importar ganadores</h3>
+      <p class="pnote" style="margin-top:0">Para pasar el historial a otro teléfono: en uno toca Compartir y envía el mensaje; en el otro pégalo aquí. También se suman los jugadores guardados.</p>
+      <div class="share-row" style="grid-template-columns:1fr">
+        <button type="button" class="btn" id="shareWins2">Compartir historial</button>
+      </div>
+      <label class="entry-label" for="importText" style="margin-top:16px">Mensaje para importar</label>
+      <textarea class="pname importbox" id="importText" rows="6" autocomplete="off" spellcheck="false" placeholder="Pega aquí el mensaje que te compartieron, o escribe un ganador por línea."></textarea>
+      <div class="paste-row"><button type="button" class="ibtn" id="pasteImport">Pegar</button></div>
+      <p class="preview" id="importPreview" aria-live="polite"></p>
+      <div class="import-actions">
+        <button type="button" class="btn btn-ink" id="importAdd" disabled>Agregar a mi historial</button>
+        <button type="button" class="btn btn-danger" id="importReplace" disabled>Reemplazar mi historial</button>
+      </div>
+    </section>
+    <section class="sset" id="installSec" hidden>
+      <h3>App</h3>
+      <button type="button" class="btn" id="installApp">Instalar en este teléfono</button>
     </section>
     <section class="sset">
       <h3>Tema</h3>
@@ -467,7 +550,7 @@ td.nd{color:var(--muted)}
   }
   function toInt(x){ var n = parseInt(x, 10); return isNaN(n) ? 0 : n; }
   function lower(s){ return String(s).toLocaleLowerCase('es'); }
-  function cleanName(s){ return String(s || '').replace(/\s+/g, ' ').trim().slice(0, 20); }
+  function cleanName(s){ return String(s || '').replace(/[,;:]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 20); }
 
   /* ---------- Estado ---------- */
   function emptyDraft(){ return { p:'', f:false, b:false }; }
@@ -798,13 +881,14 @@ td.nd{color:var(--muted)}
         d.f = !d.f;
         if (d.f) d.b = false;
         save(); updateAll();
+        if (d.f) fxFlip(r);
       });
       r.bust.addEventListener('click', function(){
         var d = state.drafts[i];
         d.b = !d.b;
         if (d.b){ d.f = false; d.p = ''; r.input.value = ''; }
         save(); updateAll();
-        if (!d.b) r.input.focus();
+        if (d.b) fxBust(r); else r.input.focus();
       });
       return r;
     });
@@ -897,7 +981,7 @@ td.nd{color:var(--muted)}
       btn.textContent = missing ? 'Cerrar ronda (faltan ' + missing + ')' : 'Cerrar ronda';
       btn.classList.toggle('ready', missing === 0);
     }
-    $('#undo').disabled = state.rounds.length === 0;
+    $('#clearRound').disabled = st.over || !state.drafts.some(hasData);
   }
 
   /* ---------- Tabla de rondas ---------- */
@@ -972,10 +1056,10 @@ td.nd{color:var(--muted)}
     var gameBox = $('#gameHistory'), setupBox = $('#setupHistory');
     if (!state.history.length){
       gameBox.innerHTML = empty; setupBox.innerHTML = empty;
-      $('#shareWins').hidden = true;
+      $('#shareWins').disabled = $('#shareWins2').disabled = !allPlayerNames().length;
       return;
     }
-    $('#shareWins').hidden = false;
+    $('#shareWins').disabled = $('#shareWins2').disabled = false;
     gameBox.innerHTML = chipsHTML() + gamesHTML(false);
     var n = state.history.length;
     setupBox.innerHTML = chipsHTML() +
@@ -1008,20 +1092,145 @@ td.nd{color:var(--muted)}
     renderHistory(); renderSetup(); renderEditors(); updateHeader();
     toast('Victoria agregada para ' + v);
   }
+  function pad2(n){ return (n < 10 ? '0' : '') + n; }
+  function shareDate(iso){
+    if (!iso) return '';
+    var d = new Date(iso);
+    return isNaN(d) ? '' : pad2(d.getDate()) + '-' + pad2(d.getMonth() + 1) + '-' + d.getFullYear();
+  }
+  function allPlayerNames(){
+    var out = [], seen = {};
+    state.players.concat(knownNames()).forEach(function(n){
+      if (n && !seen[lower(n)]){ seen[lower(n)] = 1; out.push(n); }
+    });
+    return out;
+  }
   function shareText(){
-    var lines = ['Flip 7 · Ganadores'];
-    lines.push(winsTable().map(function(w){ return w.name + ' ' + w.n; }).join(' · '));
+    var lines = ['Flip 7 · Historial de ganadores'];
+    var wt = winsTable();
+    if (wt.length) lines.push(wt.map(function(w){ return w.name + ' ' + w.n; }).join(' · '));
     lines.push('');
-    for (var i = state.history.length - 1; i >= 0 && i >= state.history.length - 10; i--){
-      var g = state.history[i];
-      var top = g.scores && g.scores.length ? ' (' + g.scores.slice().sort(function(a, b){ return b.total - a.total; })[0].total + ')' : '';
-      lines.push('Juego ' + (i + 1) + ': ' + g.winner + top);
-    }
+    state.history.forEach(function(g, i){
+      var head = 'Juego ' + (i + 1), dt = shareDate(g.date);
+      if (dt) head += ' · ' + dt;
+      var body = g.winner;
+      if (g.scores && g.scores.length){
+        body = g.scores.slice().sort(function(a, b){
+          return ((b.name === g.winner) - (a.name === g.winner)) || (b.total - a.total);
+        }).map(function(x){ return x.name + ' ' + x.total; }).join(', ');
+      }
+      lines.push(head + ': ' + body);
+    });
+    var names = allPlayerNames();
+    if (names.length){ lines.push(''); lines.push('Jugadores: ' + names.join(', ')); }
+    lines.push('');
+    lines.push('Para cargarlo en otro teléfono: abre el contador, toca Importar y pega este mensaje.');
     return lines.join('\n');
   }
+
+  /* ---------- Importar ---------- */
+  function parseImport(text){
+    var games = [], names = [], seen = {};
+    function addN(n){
+      n = canonicalName(cleanName(n));
+      if (n && !seen[lower(n)]){ seen[lower(n)] = 1; names.push(n); }
+      return n;
+    }
+    var lines = String(text || '').split(/\r?\n/);
+    var reGame = /^[\s*_\-•]*juego\s+(\d+)\s*(?:[·\-–—|]\s*(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{4}))?\s*[:=]\s*(.+?)\s*$/i;
+    var reNames = /^[\s*_\-•]*jugadores\s*:\s*(.+)$/i;
+    lines.forEach(function(line){
+      var m = line.match(reGame);
+      if (m){
+        var winner = null, scores = [], complete = true;
+        m[5].split(',').forEach(function(it, k){
+          it = it.trim();
+          var mm = it.match(/^(.*?)\s+(\d{1,4})$/);
+          var nm = addN(mm ? mm[1] : it);
+          if (!nm) return;
+          if (!winner) winner = nm;
+          if (mm) scores.push({ name:nm, total:toInt(mm[2]) }); else complete = false;
+        });
+        if (!winner) return;
+        var date = null;
+        if (m[2]){
+          var dd = new Date(toInt(m[4]), toInt(m[3]) - 1, toInt(m[2]), 12);
+          if (!isNaN(dd)) date = dd.toISOString();
+        }
+        games.push({ num:toInt(m[1]), winner:winner, scores: complete && scores.length ? scores : null, rounds:0, date:date });
+        return;
+      }
+      var pm = line.match(reNames);
+      if (pm) pm[1].split(',').forEach(addN);
+    });
+    if (!games.length && !names.length){
+      // Carga manual: un ganador por línea
+      lines.forEach(function(line){
+        var t = line.replace(/^[\s*_\-•]*\d*[.)]?\s*/, '').trim();
+        if (!t || t.indexOf('·') >= 0 || /^(flip 7|para )/i.test(t)) return;
+        var nm = addN(t);
+        if (nm) games.push({ num:games.length + 1, winner:nm, scores:null, rounds:0, date:null });
+      });
+    }
+    games.sort(function(a, b){ return a.num - b.num; });
+    return {
+      games: games.map(function(g){ return { winner:g.winner, scores:g.scores, rounds:g.rounds, date:g.date }; }),
+      names: names
+    };
+  }
+  function newNamesCount(names){
+    var known = {};
+    allPlayerNames().forEach(function(n){ known[lower(n)] = 1; });
+    return names.filter(function(n){ return !known[lower(n)]; }).length;
+  }
+  function plural(n, one, many){ return n + ' ' + (n === 1 ? one : many); }
+  function updateImportPreview(){
+    var res = parseImport($('#importText').value), out = $('#importPreview');
+    var g = res.games.length, nNew = newNamesCount(res.names);
+    $('#importAdd').disabled = !g && !nNew;
+    $('#importReplace').disabled = !g;
+    if (!$('#importText').value.trim()){ out.textContent = ''; return res; }
+    if (!g && !res.names.length){ out.textContent = 'No encontré juegos ni jugadores en el texto.'; return res; }
+    var wins = {}, order_ = [];
+    res.games.forEach(function(x){ if (!wins[x.winner]){ wins[x.winner] = 0; order_.push(x.winner); } wins[x.winner]++; });
+    var txt = g ? 'Encontré ' + plural(g, 'juego', 'juegos') + ' (' + order_.map(function(n){ return n + ' ' + wins[n]; }).join(', ') + ')' : 'No encontré juegos';
+    txt += ' y ' + plural(res.names.length, 'jugador', 'jugadores');
+    txt += nNew ? ', ' + plural(nNew, 'nuevo', 'nuevos') + '.' : '.';
+    out.textContent = txt;
+    return res;
+  }
+  function doImport(replace){
+    var res = parseImport($('#importText').value);
+    if (replace && !res.games.length) return;
+    var nNew = newNamesCount(res.names);
+    state.history = replace ? res.games : state.history.concat(res.games);
+    remember(res.names);
+    save();
+    $('#importText').value = '';
+    updateImportPreview();
+    renderHistory(); renderSetup(); renderEditors(); updateAll();
+    closeSheet();
+    var msg = replace ? 'Historial reemplazado: ' + plural(res.games.length, 'juego', 'juegos') : 'Se agregaron ' + plural(res.games.length, 'juego', 'juegos');
+    if (nNew) msg += ' y ' + plural(nNew, 'jugador nuevo', 'jugadores nuevos');
+    toast(msg);
+  }
+  function pasteImport(){
+    try {
+      navigator.clipboard.readText().then(function(t){
+        $('#importText').value = t; updateImportPreview();
+      }, function(){ toast('Mantén presionado el cuadro y elige Pegar'); });
+    } catch(e){ toast('Mantén presionado el cuadro y elige Pegar'); }
+  }
+  function openImport(){
+    openSheet();
+    var sec = $('#importSec');
+    try { sec.scrollIntoView({ block:'start', behavior: reducedMotion ? 'auto' : 'smooth' }); } catch(e){}
+    setTimeout(function(){ $('#importText').focus(); }, reducedMotion ? 0 : 250);
+  }
+
   function copyText(text){
     try {
-      navigator.clipboard.writeText(text).then(function(){ toast('Resumen copiado, pégalo en el grupo'); }, function(){ toast('No se pudo copiar el resumen'); });
+      navigator.clipboard.writeText(text).then(function(){ toast('Historial copiado, pégalo en el grupo'); }, function(){ toast('No se pudo copiar el resumen'); });
     } catch(e){ toast('No se pudo copiar el resumen'); }
   }
   function shareWins(){
@@ -1066,6 +1275,73 @@ td.nd{color:var(--muted)}
     scrollTop(); buzz(25);
     toast('Ronda ' + state.rounds.length + ' cerrada', 'Deshacer', undoRound);
   }
+  function clearRoundData(){
+    if (state.view !== 'game' || !state.drafts.some(hasData)) return;
+    var prev = state.drafts.map(function(d){ return { p:d.p, f:d.f, b:d.b }; });
+    var players = state.players.join('\n');
+    state.drafts = state.players.map(emptyDraft);
+    save(); syncInputs(); updateAll();
+    toast('Se borraron los datos de esta ronda', 'Deshacer', function(){
+      if (state.view !== 'game' || state.players.join('\n') !== players) return;
+      state.drafts = prev;
+      save(); syncInputs(); updateAll();
+    });
+  }
+
+  /* ---------- Efectos ---------- */
+  var FX_COLORS = ['#ffd23f', '#d62828', '#8fdcd6', '#fffdf4', '#ff9a3c'];
+  function fxLayer(r){
+    var old = r.el.querySelector('.fx-layer');
+    if (old) old.remove();
+    var l = document.createElement('div');
+    l.className = 'fx-layer';
+    l.setAttribute('aria-hidden', 'true');
+    r.el.appendChild(l);
+    setTimeout(function(){ l.remove(); }, 1100);
+    return l;
+  }
+  function restartAnim(el, cls){
+    el.classList.remove(cls);
+    void el.offsetWidth;
+    el.classList.add(cls);
+    setTimeout(function(){ el.classList.remove(cls); }, 900);
+  }
+  function fxFlip(r){
+    buzz([15, 40, 15]);
+    if (reducedMotion) return;
+    var layer = fxLayer(r);
+    var cr = r.el.getBoundingClientRect(), br = r.flip.getBoundingClientRect();
+    var x = br.left - cr.left + br.width / 2, y = br.top - cr.top + br.height / 2;
+    for (var k = 0; k < 22; k++){
+      var b = document.createElement('span');
+      var ang = Math.random() * Math.PI * 2, dist = 55 + Math.random() * 90;
+      b.className = 'fx-bit';
+      b.style.setProperty('--x', x + 'px');
+      b.style.setProperty('--y', y + 'px');
+      b.style.setProperty('--dx', Math.round(Math.cos(ang) * dist) + 'px');
+      b.style.setProperty('--dy', Math.round(Math.sin(ang) * dist - 40) + 'px');
+      b.style.setProperty('--r', Math.round(Math.random() * 720 - 360) + 'deg');
+      b.style.setProperty('--c', FX_COLORS[k % FX_COLORS.length]);
+      b.style.setProperty('--d', Math.round(Math.random() * 80) + 'ms');
+      layer.appendChild(b);
+    }
+    var pop = document.createElement('span');
+    pop.className = 'fx-pop';
+    pop.textContent = '¡FLIP 7!';
+    layer.appendChild(pop);
+    restartAnim(r.el, 'fx-glow');
+  }
+  function fxBust(r){
+    buzz(90);
+    if (reducedMotion) return;
+    var layer = fxLayer(r);
+    var pop = document.createElement('span');
+    pop.className = 'fx-pop bust';
+    pop.textContent = 'BUST';
+    layer.appendChild(pop);
+    restartAnim(r.el, 'fx-shake');
+  }
+
   function undoRound(){
     if (!state.rounds.length) return;
     var r = state.rounds.pop();
@@ -1211,11 +1487,17 @@ td.nd{color:var(--muted)}
 
   $('#startGame').addEventListener('click', startGame);
   $('#closeRound').addEventListener('click', closeRound);
-  $('#undo').addEventListener('click', undoRound);
+  $('#clearRound').addEventListener('click', clearRoundData);
   $('#saveGame').addEventListener('click', saveGame);
   $('#addPast').addEventListener('click', addPastWin);
   $('#pastWinner').addEventListener('keydown', function(ev){ if (ev.key === 'Enter'){ ev.preventDefault(); addPastWin(); } });
   $('#shareWins').addEventListener('click', shareWins);
+  $('#shareWins2').addEventListener('click', shareWins);
+  $('#openImport').addEventListener('click', openImport);
+  $('#importText').addEventListener('input', updateImportPreview);
+  $('#pasteImport').addEventListener('click', pasteImport);
+  $('#importAdd').addEventListener('click', function(){ doImport(false); });
+  armConfirm($('#importReplace'), 'Toca otra vez para reemplazar', function(){ doImport(true); });
 
   $('#openSettings').addEventListener('click', openSheet);
   $('#closeSettings').addEventListener('click', closeSheet);
@@ -1232,6 +1514,34 @@ td.nd{color:var(--muted)}
 
   document.addEventListener('pointerdown', keepAwake, { passive:true });
   document.addEventListener('visibilitychange', keepAwake);
+
+  /* ---------- App instalable (solo fuera de claude.ai, p. ej. GitHub Pages) ---------- */
+  var installEvt = null;
+  (function setupPWA(){
+    var host = location.hostname || '';
+    if (location.protocol !== 'https:' && host !== 'localhost') return;
+    if (/claude/i.test(host)) return;
+    function link(rel, href, extra){
+      var l = document.createElement('link');
+      l.rel = rel; l.href = href;
+      if (extra) for (var k in extra) l.setAttribute(k, extra[k]);
+      document.head.appendChild(l);
+    }
+    link('manifest', 'manifest.webmanifest');
+    link('apple-touch-icon', 'icons/apple-touch-icon.png', { sizes:'180x180' });
+    try {
+      if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function(){});
+    } catch(e){}
+    window.addEventListener('beforeinstallprompt', function(e){
+      e.preventDefault(); installEvt = e; $('#installSec').hidden = false;
+    });
+    window.addEventListener('appinstalled', function(){ installEvt = null; $('#installSec').hidden = true; });
+  })();
+  $('#installApp').addEventListener('click', function(){
+    if (!installEvt) return;
+    installEvt.prompt();
+    installEvt.userChoice.then(function(){ installEvt = null; $('#installSec').hidden = true; }).catch(function(){});
+  });
 
   applyTheme();
   if (state.view === 'game') buildCards();
