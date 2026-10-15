@@ -240,6 +240,23 @@ td.tot{font-weight:700;background:var(--surface-2)}
 td.nd{color:var(--muted)}
 .legend{margin:8px 0 0;font-size:.78rem;color:var(--muted)}
 
+/* Editor de jugadores */
+.plist{list-style:none;margin:0 0 12px;padding:0;display:flex;flex-direction:column;gap:8px}
+.prow{display:grid;grid-template-columns:minmax(0,1fr) 46px 46px auto;gap:6px;align-items:center}
+.pname{width:100%;min-height:46px;padding:6px 12px;border:2.5px solid var(--line);border-radius:12px;background:var(--field);font-size:1rem;font-weight:700}
+.pname::placeholder{color:var(--muted);font-weight:500}
+.ibtn{min-width:46px;min-height:46px;padding:0 12px;border:2.5px solid var(--line);border-radius:12px;background:var(--surface-2);font-weight:700;font-size:1rem}
+.ibtn:disabled{opacity:.35}
+.ibtn.rm{color:var(--red)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .ibtn.rm{color:#ff8a8a}}
+:root[data-theme="dark"] .ibtn.rm{color:#ff8a8a}
+.ibtn.rm.armed{background:var(--red);color:#fff}
+.addrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+.perr{margin:8px 0 0;font-size:.85rem;font-weight:700;color:var(--red)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .perr{color:#ff8a8a}}
+:root[data-theme="dark"] .perr{color:#ff8a8a}
+.pnote{margin:10px 0 0;font-size:.8rem;color:var(--muted)}
+
 .danger{display:flex;flex-direction:column;gap:10px;margin:22px 0 10px}
 .foot{margin:14px 0 0;text-align:center;font-size:.8rem;color:var(--muted)}
 
@@ -319,6 +336,20 @@ td.nd{color:var(--muted)}
     <div class="panel-body" id="rounds"></div>
   </details>
 
+  <details id="playersDetails" class="panel">
+    <summary id="playersSummary">Jugadores</summary>
+    <div class="panel-body">
+      <ul class="plist" id="plist"></ul>
+      <div class="addrow">
+        <label class="sr" for="newPlayer">Nombre del nuevo jugador</label>
+        <input class="pname" id="newPlayer" type="text" maxlength="20" autocomplete="off" enterkeyhint="done" placeholder="Nuevo jugador">
+        <button type="button" id="addPlayer" class="ibtn">Agregar</button>
+      </div>
+      <p class="perr" id="perr" role="alert" hidden></p>
+      <p class="pnote">El orden de esta lista decide quién queda arriba en un empate. Si agregas a alguien con el juego empezado, parte con 0 en las rondas anteriores. Quitar a alguien borra sus puntos del juego actual; el historial no cambia.</p>
+    </div>
+  </details>
+
   <div class="danger">
     <button type="button" id="discard" class="btn btn-danger">Descartar juego actual</button>
     <button type="button" id="clearHist" class="btn btn-danger">Borrar historial de juegos</button>
@@ -363,7 +394,7 @@ td.nd{color:var(--muted)}
       rounds: [],
       drafts: PLAYERS.map(emptyDraft),
       history: [{ n:1, winner:'Simon', scores:null, rounds:0, date:null }],
-      ui: { histOpen:true, roundsOpen:false }
+      ui: { histOpen:true, roundsOpen:false, playersOpen:false }
     };
   }
   function toInt(x){ var n = parseInt(x,10); return isNaN(n) ? 0 : n; }
@@ -394,7 +425,7 @@ td.nd{color:var(--muted)}
         date: typeof h.date === 'string' ? h.date : null
       };
     }) : d.history;
-    var ui = { histOpen: !(s.ui && s.ui.histOpen === false), roundsOpen: !!(s.ui && s.ui.roundsOpen) };
+    var ui = { histOpen: !(s.ui && s.ui.histOpen === false), roundsOpen: !!(s.ui && s.ui.roundsOpen), playersOpen: !!(s.ui && s.ui.playersOpen) };
     return { v:1, players:players, rounds:rounds, drafts:drafts, history:history, ui:ui };
   }
 
@@ -693,6 +724,89 @@ td.nd{color:var(--muted)}
     box.innerHTML = h;
   }
 
+  /* ---------- Edición de jugadores ---------- */
+  function cleanName(s){ return String(s || '').replace(/\s+/g,' ').trim().slice(0,20); }
+  function showErr(msg){ var e = $('#perr'); e.textContent = msg || ''; e.hidden = !msg; }
+  function validName(name, except){
+    if (!name){ showErr('Escribe un nombre.'); return false; }
+    var k = name.toLocaleLowerCase('es');
+    var taken = state.players.some(function(p, i){ return i !== except && p.toLocaleLowerCase('es') === k; });
+    if (taken){ showErr('Ya hay un jugador llamado ' + name + '.'); return false; }
+    showErr(''); return true;
+  }
+  function currentList(){ return state.players.map(function(n, i){ return { name:n, from:i }; }); }
+  function applyPlayers(list){
+    state.rounds = state.rounds.map(function(r){
+      return list.map(function(p){ return p.from == null ? { p:0, f:false, b:false, n:true } : r[p.from]; });
+    });
+    state.drafts = list.map(function(p){ return p.from == null ? emptyDraft() : state.drafts[p.from]; });
+    state.players = list.map(function(p){ return p.name; });
+    save();
+    buildCards(); updateAll(); renderRounds(); renderPlayers();
+  }
+  function mkBtn(text, label, disabled, fn){
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'ibtn'; b.textContent = text;
+    b.setAttribute('aria-label', label); b.disabled = disabled;
+    if (fn) b.addEventListener('click', fn);
+    return b;
+  }
+  function movePlayer(i, d){
+    var list = currentList(), j = i + d, t = list[i];
+    list[i] = list[j]; list[j] = t;
+    applyPlayers(list);
+    var row = $('#plist').children[j];
+    if (row){
+      var b = row.querySelectorAll('.ibtn')[d < 0 ? 0 : 1];
+      (b && !b.disabled ? b : row.querySelector('.pname')).focus();
+    }
+  }
+  function removePlayer(i){
+    var name = state.players[i], list = currentList();
+    list.splice(i, 1);
+    applyPlayers(list);
+    toast(name + ' salió de la lista');
+  }
+  function addPlayer(){
+    var inp = $('#newPlayer'), v = cleanName(inp.value);
+    if (!validName(v, -1)) return;
+    var list = currentList();
+    list.push({ name:v, from:null });
+    applyPlayers(list);
+    inp.value = '';
+    toast(state.rounds.length ? v + ' entra con 0 puntos' : v + ' se sumó a la lista');
+  }
+  function renderPlayers(){
+    var ul = $('#plist'), n = state.players.length;
+    ul.textContent = '';
+    $('#playersSummary').textContent = 'Jugadores (' + n + ')';
+    state.players.forEach(function(name, i){
+      var li = document.createElement('li');
+      li.className = 'prow';
+      var inp = document.createElement('input');
+      inp.className = 'pname'; inp.type = 'text'; inp.maxLength = 20;
+      inp.autocomplete = 'off'; inp.value = name;
+      inp.setAttribute('enterkeyhint', 'done');
+      inp.setAttribute('aria-label', 'Nombre de ' + name);
+      inp.addEventListener('keydown', function(ev){ if (ev.key === 'Enter'){ ev.preventDefault(); inp.blur(); } });
+      inp.addEventListener('change', function(){
+        var v = cleanName(inp.value);
+        if (v === state.players[i]){ inp.value = v; showErr(''); return; }
+        if (!validName(v, i)){ inp.value = state.players[i]; return; }
+        var list = currentList(); list[i].name = v;
+        applyPlayers(list);
+        toast(name + ' ahora se llama ' + v);
+      });
+      var up = mkBtn('↑', 'Subir a ' + name, i === 0, function(){ movePlayer(i, -1); });
+      var dn = mkBtn('↓', 'Bajar a ' + name, i === n - 1, function(){ movePlayer(i, 1); });
+      var rm = mkBtn('Quitar', 'Quitar a ' + name, n <= 2, null);
+      rm.classList.add('rm');
+      armConfirm(rm, '¿Seguro?', function(){ removePlayer(i); });
+      li.append(inp, up, dn, rm);
+      ul.appendChild(li);
+    });
+  }
+
   /* ---------- Acciones ---------- */
   function scrollTop(){
     try { window.scrollTo({ top:0, behavior: reducedMotion ? 'auto' : 'smooth' }); } catch(e){ window.scrollTo(0,0); }
@@ -816,6 +930,11 @@ td.nd{color:var(--muted)}
   rd.open = state.ui.roundsOpen;
   hd.addEventListener('toggle', function(){ state.ui.histOpen = hd.open; save(); });
   rd.addEventListener('toggle', function(){ state.ui.roundsOpen = rd.open; save(); });
+  var pd = $('#playersDetails');
+  pd.open = state.ui.playersOpen;
+  pd.addEventListener('toggle', function(){ state.ui.playersOpen = pd.open; save(); });
+  $('#addPlayer').addEventListener('click', addPlayer);
+  $('#newPlayer').addEventListener('keydown', function(ev){ if (ev.key === 'Enter'){ ev.preventDefault(); addPlayer(); } });
 
   $('#closeRound').addEventListener('click', closeRound);
   $('#undo').addEventListener('click', undoRound);
@@ -830,6 +949,7 @@ td.nd{color:var(--muted)}
   updateAll();
   renderRounds();
   renderHistory();
+  renderPlayers();
 })();
 </script>
 </body>

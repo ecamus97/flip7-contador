@@ -18,12 +18,15 @@ Es una sola página (`index.html`) con CSS y JS inline, sin librerías ni build.
 - Jugadores pendientes marcados en naranja; líder en dorado; ganador en verde.
 - Deshacer la última ronda (los puntos vuelven a los campos para corregirlos).
 - Historial de juegos con victorias por jugador y tabla de rondas del juego actual.
+- Lista de jugadores editable desde la misma página.
 - Todo se guarda en `localStorage` del dispositivo.
 - Tema claro y oscuro, safe areas de iPhone y pantalla encendida durante el juego.
 
 ## Jugadores
 
-La lista está en la constante `PLAYERS` al inicio del script de `index.html`.
+La lista se edita desde la sección "Jugadores" de la página: agregar, renombrar, cambiar el orden y quitar. El orden define quién queda arriba en un empate. Quien entra con el juego empezado parte con 0 en las rondas anteriores.
+
+La lista inicial (la que aparece la primera vez que se abre la página en un dispositivo) está en la constante `PLAYERS` al inicio del script de `index.html`.
 
 ## Publicar con GitHub Pages
 
